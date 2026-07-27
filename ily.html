@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>🌸 Маленький опрос 🌸</title>
+  <style>
+    /* Основные стили страницы и нежно-розовый фон */
+    body {
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background-color: #ffeef2;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Стили для летающих сердечек на фоне */
+    .heart {
+      position: absolute;
+      color: rgba(255, 182, 193, 0.7);
+      font-size: 20px;
+      user-select: none;
+      pointer-events: none;
+      animation: fly linear infinite;
+    }
+
+    /* Центральный красивый бокс */
+    .main-box {
+      background-color: rgba(255, 255, 255, 0.95);
+      padding: 40px 30px;
+      border-radius: 25px;
+      box-shadow: 0 10px 25px rgba(235, 131, 153, 0.3);
+      text-align: center;
+      z-index: 10;
+      width: 90%;
+      max-width: 400px;
+      border: 2px solid #ffcad4;
+    }
+
+    /* Заголовок (текст вопроса) */
+    h1 {
+      font-size: 2.2rem;
+      color: #d63384;
+      margin: 0 0 35px 0;
+      font-weight: 700;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+    }
+
+    /* Контейнер для кнопок — разносим кнопки по бокам */
+    .buttons-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 30px; /* Увеличенный зазор между кнопками */
+      min-height: 60px;
+    }
+
+    /* Общие стили для кнопок */
+    .btn {
+      padding: 15px 35px;
+      font-size: 1.2rem;
+      font-weight: 600;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: transform 0.15s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+      outline: none;
+      letter-spacing: 0.5px;
+      user-select: none;
+    }
+
+    /* Стиль кнопки "Да" (справа по умолчанию) */
+    #yesBtn {
+      background: linear-gradient(45deg, #66bb6a, #43a047);
+      color: white;
+      box-shadow: 0 4px 15px rgba(67, 160, 71, 0.4);
+      order: 2; /* Ставим кнопке "Да" второй порядок (справа) */
+    }
+
+    #yesBtn:hover {
+      transform: scale(1.1) translateY(-2px);
+      box-shadow: 0 6px 20px rgba(67, 160, 71, 0.6);
+    }
+
+    /* Стиль кнопки "Нет" (слева по умолчанию) */
+    #noBtn {
+      background: linear-gradient(45deg, #ff8a80, #ff5252);
+      color: white;
+      box-shadow: 0 4px 15px rgba(255, 82, 82, 0.3);
+      order: 1; /* Ставим кнопке "Нет" первый порядок (слева) */
+      position: static; /* По умолчанию стоит красиво в потоке рядом с "Да" */
+      transition: left 0.1s ease-out, top 0.1s ease-out, transform 0.1s ease;
+    }
+
+    /* Анимация полета сердечек */
+    @keyframes fly {
+      0% {
+        transform: translateY(100vh) rotate(0deg);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-10vh) rotate(360deg);
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="main-box">
+    <h1 id="question">ты какашка?</h1>
+    <div class="buttons-container" id="btnContainer">
+      <button class="btn" id="noBtn">Нет</button>
+      <button class="btn" id="yesBtn">Да</button>
+    </div>
+  </div>
+
+  <script>
+    const noBtn = document.getElementById('noBtn');
+    const yesBtn = document.getElementById('yesBtn');
+    const question = document.getElementById('question');
+    const btnContainer = document.getElementById('btnContainer');
+
+    // --- ЛОГИКА СЕРДЕЧЕК НА ФОНЕ ---
+    function createHeart() {
+      const heart = document.createElement('div');
+      heart.classList.add('heart');
+      heart.innerHTML = '❤️';
+      
+      heart.style.left = Math.random() * 100 + "vw";
+      
+      const size = Math.random() * 15 + 15 + "px";
+      heart.style.fontSize = size;
+      
+      const duration = Math.random() * 3 + 3 + "s";
+      heart.style.animationDuration = duration;
+      
+      heart.style.opacity = Math.random() * 0.5 + 0.3;
+
+      document.body.appendChild(heart);
+
+      setTimeout(() => {
+        heart.remove();
+      }, parseFloat(duration) * 1000);
+    }
+
+    setInterval(createHeart, 400);
+
+    // --- ЛОГИКА КНОПКИ "НЕТ" ---
+    function moveNoButton(e) {
+      if (e) e.preventDefault();
+
+      const btnWidth = noBtn.offsetWidth;
+      const btnHeight = noBtn.offsetHeight;
+      const padding = 20;
+
+      const maxWidth = window.innerWidth - btnWidth - padding * 2;
+      const maxHeight = window.innerHeight - btnHeight - padding * 2;
+
+      const randomX = Math.max(padding, Math.floor(Math.random() * maxWidth));
+      const randomY = Math.max(padding, Math.floor(Math.random() * maxHeight));
+
+      // При первой попытке взаимодействия переводим кнопку в fixed
+      if (noBtn.style.position !== 'fixed') {
+        noBtn.style.position = 'fixed';
+      }
+
+      noBtn.style.left = randomX + 'px';
+      noBtn.style.top = randomY + 'px';
+      
+      const scale = Math.random() * 0.2 + 0.9;
+      noBtn.style.transform = `scale(${scale})`;
+    }
+
+    noBtn.addEventListener('mouseover', moveNoButton);
+    noBtn.addEventListener('touchstart', moveNoButton);
+    noBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        moveNoButton(e);
+    });
+
+    // --- ЛОГИКА КНОПКИ "ДА" ---
+    yesBtn.addEventListener('click', () => {
+      question.innerHTML = 'я так и знал😈<br><span style="font-size: 1.2rem; color: #888;">ты какашка 😈💩</span>';
+      
+      btnContainer.style.display = 'none';
+      noBtn.style.display = 'none';
+
+      for(let i=0; i<30; i++) {
+          setTimeout(createHeart, i * 100);
+      }
+    });
+  </script>
+
+</body>
+</html>
